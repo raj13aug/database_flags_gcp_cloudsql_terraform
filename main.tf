@@ -39,6 +39,15 @@ resource "google_sql_database_instance" "primary" {
         value = "0.0.0.0/0"
       }
     }
+
+    dynamic "database_flags" {
+      for_each = var.database_flags
+      content {
+        name  = lookup(database_flags.value, "name", null)
+        value = lookup(database_flags.value, "value", null)
+      }
+    }
+
   }
 
   depends_on = [google_project_service.services, time_sleep.wait_30_seconds]
